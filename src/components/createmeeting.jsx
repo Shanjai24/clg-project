@@ -5,9 +5,8 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckIcon from "@mui/icons-material/Check";
-import Cmeeting from "./template";
 
-export default function BoxBasic() {
+export default function BoxBasic({ onUseTemplate,setSelectedMeeting,setMeetVisible }) {
   const [tselect, setTselect] = useState(null);
   const [tsearch, setTsearch] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("ALL");
@@ -20,27 +19,17 @@ export default function BoxBasic() {
     { id: 4, name: "Grievance Meeting", status: "Inactive", category: "COA", isActive: false },
     { id: 5, name: "Placement Meeting", status: "Active", category: "COA", isActive: true }
   ];
-  
-  const handleSel = (id) => {
+
+  const handleSel = (id, name) => {
     setTselect((prev) => (prev === id ? null : id));
+    setSelectedMeeting((prev) => (prev === name ? "" : name));
   };
+  
   
   const filtermeet = files.filter(file =>
     (selectedFilter === "ALL" || file.category === selectedFilter) &&
     file.name.toLowerCase().includes(tsearch.toLowerCase())
   );
-  
-  const [showTemplate, setShowTemplate] = useState(false);
-  
-  // Find the selected meeting
-  const selectedMeeting = files.find(file => file.id === tselect);
-  
-  if (showTemplate) {
-    return <Cmeeting 
-      onBack={() => setShowTemplate(false)} 
-      meetingName={selectedMeeting ? selectedMeeting.name : ""} 
-    />;
-  }  
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -49,11 +38,12 @@ export default function BoxBasic() {
         {/* top */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1 }}>
           <Typography sx={{ color: "#3D3939", fontWeight: "bold" }}>Select Template</Typography>
-          <IconButton sx={{ border: "2px solid #FB3748", borderRadius: "50%", p: "4px", "&:hover": { backgroundColor: "transparent" } }}>
+          <IconButton sx={{ border: "2px solid #FB3748", borderRadius: "50%", p: "4px", "&:hover": { backgroundColor: "transparent" } }}
+           onClick={() => setMeetVisible(false)}
+          >
             <Close sx={{ fontSize: "12px", color: "#FB3748" }} />
           </IconButton>
         </Box>
-
         <hr />
 
         {/* search */}
@@ -111,7 +101,7 @@ export default function BoxBasic() {
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={tselect === file.id}
-                      onChange={() => handleSel(file.id)}
+                      onChange={() => handleSel(file.id, file.name)}
                       disabled={!file.isActive}
                       icon={ 
                         <span style={{ width: 24, height: 24, borderRadius: "50%", border: "2px solid #D3D3D3", backgroundColor: !file.isActive ? "#DADADA" : "transparent", cursor: !file.isActive ? "not-allowed" : "pointer" }}/> 
@@ -203,12 +193,11 @@ export default function BoxBasic() {
               color: "#A0A0A0",
             },
           }} 
-          onClick={() => setShowTemplate(true)}
           disabled={tselect === null}
+          onClick={onUseTemplate}
         >
           Use Template
         </Button>
-
       </Card>
     </Box>
   );

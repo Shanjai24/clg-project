@@ -8,6 +8,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import store from "../assets/store.png";
 import home from "../assets/home.png";
 import graph from "../assets/graph.png";
+import empty from "../assets/empty.png";
 
 import SearchIcon from "@mui/icons-material/Search";
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
@@ -17,6 +18,7 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import BoxBasic from "../components/createmeeting";
+import Cmeeting from "../components/template";
 
 
 export default function MainPage() {
@@ -29,13 +31,20 @@ export default function MainPage() {
   };
 
   const [meetvisible, setMeetVisible] = useState(false);
+  const [showTemplate, setShowTemplate] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState("");
+
+  const handleUseTemplate = () => {
+    setShowTemplate(true);
+  };
+  
 
   return (
     <Box sx={{backgroundColor:'#F5F9FF',display:'flex'}}>
 
       <Box
         sx={{
-          width: expanded ? "220px" : "60px",
+          width: expanded ? "100px" : "60px",
           height: "96vh",
           background: "#FFFFFF",
           display: "flex",
@@ -122,138 +131,146 @@ export default function MainPage() {
           <AccountCircleOutlinedIcon sx={{ width: 30, height: 30 }} />
         </Box>
       </Box>
-
-      <Box sx={{ flex: 1, p: 3 }}>
-        <Box sx={{display:'flex',gap:10}}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-              paddingTop:0.5,
-              paddingBottom:0.5,
-              backgroundColor: "#FFFFFF",
-              borderRadius: 2,
-              width: "800px",
-            }}
-          >
-            <Box
-              onClick={() => setSelectedTab("Todo")}
-              sx={{
-                width: "300px",
-                borderRight: selectedTab === "Todo" ? "none" : "1px solid black",
-                p: 1,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                backgroundColor: selectedTab === "Todo" ? "#1976D2" : "white",
-                color: selectedTab === "Todo" ? "white" : "black",
-                transition: "0.50s",
-              }}
-            >
-              <EventNoteOutlinedIcon />
-              <Typography>Todo</Typography>
-            </Box>
-
-            <Box
-              onClick={() => setSelectedTab("Scheduled")}
-              sx={{
-                width: "300px",
-                p: 1,
-                borderRight: selectedTab === "Scheduled" ? "none" : "1px solid black",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                backgroundColor: selectedTab === "Scheduled" ? "#1976D2" : "white",
-                color: selectedTab === "Scheduled" ? "white" : "black",
-                transition: "0.50s",
-              }}
-            >
-              <SpeakerNotesOutlinedIcon />
-              <Typography>Scheduled</Typography>
-            </Box>
-
-            <Box
-              onClick={() => setSelectedTab("Draft")}
-              sx={{
-                width: "300px",
-                p: 1,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                backgroundColor: selectedTab === "Draft" ? "#1976D2" : "white",
-                color: selectedTab === "Draft" ? "white" : "black",
-                transition: "0.50s",
-              }}
-            >
-              <CalendarMonthOutlinedIcon />
-              <Typography>Draft</Typography>
-            </Box>
-          </Box>
-        
-          <Box sx={{padding:'10px',width:'250px',backgroundColor:'green',color:'white',textAlign:'center',borderRadius:'6px',display:'flex',justifyContent:'center',gap:1,cursor:'pointer'}}
-          onClick={() => setMeetVisible(true)}
-          >
-              <AddCircleOutlineOutlinedIcon />
-              <Typography>
-                Create Meeting
-              </Typography>
-          </Box>
-          {meetvisible && (
-            <div style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 999,
-            }}>
-              <BoxBasic/>
-            </div>
-          )}
-      </Box>
-
-
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 2 ,width:'800px'}}>
-          <TextField
-          sx={{backgroundColor:'white'}}
-            fullWidth
-            placeholder="Search"
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
+      {showTemplate ? (
+        <Box sx={{width:'100%'}}>
+          <Cmeeting selectedMeeting={selectedMeeting}
+          onBack={() => {
+            setShowTemplate(false);
+            setMeetVisible(false);
+          }}
           />
-          <Box sx={{ display: "flex", alignItems: "center", width: "15%", p: "8px", border: "1px solid #ccc", borderRadius: "6px",backgroundColor:'white' }}>
-            <FilterAltOutlinedIcon />
-            <Typography sx={{ fontSize: "12px", color: "#546773" }}>Filter By</Typography>
-          </Box>
         </Box>
+      ) : (
+        <Box sx={{ flex: 1, p: 3 }}>
+          <Box sx={{display:'flex',gap:10}}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                paddingTop:0.5,
+                paddingBottom:0.5,
+                backgroundColor: "#FFFFFF",
+                borderRadius: 2,
+                width: "800px",
+              }}
+            >
+              <Box
+                onClick={() => setSelectedTab("Todo")}
+                sx={{
+                  width: "300px",
+                  borderRight: selectedTab === "Todo" ? "none" : "1px solid black",
+                  p: 1,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  backgroundColor: selectedTab === "Todo" ? "#1976D2" : "white",
+                  color: selectedTab === "Todo" ? "white" : "black",
+                  transition: "0.50s",
+                }}
+              >
+                <EventNoteOutlinedIcon />
+                <Typography>Todo</Typography>
+              </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60vh",ml:'-300px' }}>
-          <Box sx={{ width: 100, height: 100, backgroundColor: "#E8F0FF", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Typography variant="h4" color="#A0AEC0">📄</Typography>
+              <Box
+                onClick={() => setSelectedTab("Scheduled")}
+                sx={{
+                  width: "300px",
+                  p: 1,
+                  borderRight: selectedTab === "Scheduled" ? "none" : "1px solid black",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  backgroundColor: selectedTab === "Scheduled" ? "#1976D2" : "white",
+                  color: selectedTab === "Scheduled" ? "white" : "black",
+                  transition: "0.50s",
+                }}
+              >
+                <SpeakerNotesOutlinedIcon />
+                <Typography>Scheduled</Typography>
+              </Box>
+
+              <Box
+                onClick={() => setSelectedTab("Draft")}
+                sx={{
+                  width: "300px",
+                  p: 1,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  backgroundColor: selectedTab === "Draft" ? "#1976D2" : "white",
+                  color: selectedTab === "Draft" ? "white" : "black",
+                  transition: "0.50s",
+                }}
+              >
+                <CalendarMonthOutlinedIcon />
+                <Typography>Draft</Typography>
+              </Box>
+            </Box>
+          
+            <Box sx={{padding:'10px',width:'250px',backgroundColor:'green',color:'white',textAlign:'center',borderRadius:'6px',display:'flex',justifyContent:'center',gap:1,cursor:'pointer'}}
+            onClick={() => setMeetVisible(true)}
+            >
+                <AddCircleOutlineOutlinedIcon />
+                <Typography>
+                  Create Meeting
+                </Typography>
+            </Box>
+            {meetvisible && (
+              <div style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 999,
+              }}>
+                <BoxBasic onUseTemplate={handleUseTemplate} setSelectedMeeting={setSelectedMeeting} setMeetVisible={setMeetVisible} />
+              </div>
+            )}
           </Box>
-          <Typography variant="h6" fontWeight={600} mt={2}>No todo Works</Typography>
-          <Typography color="gray">Any assets used in projects will live here. Start creating by uploading your files.</Typography>
-        </Box>
 
-      </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", mt: 2, gap: 2 ,width:'800px'}}>
+            <TextField
+            sx={{backgroundColor:'white'}}
+              fullWidth
+              placeholder="Search"
+              variant="outlined"
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Box sx={{ display: "flex", alignItems: "center", width: "15%", p: "8px", border: "1px solid #ccc", borderRadius: "6px",backgroundColor:'white' }}>
+              <FilterAltOutlinedIcon />
+              <Typography sx={{ fontSize: "12px", color: "#546773" }}>Filter By</Typography>
+            </Box>
+          </Box>
+
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60vh",ml:'-300px' }}>
+              <img src={empty} alt={empty} style={{ width: 200, height: 150 }} />
+            <Typography variant="h6" fontWeight={600} mt={2}>No todo Works</Typography>
+            <Typography color="gray" sx={{maxWidth:'350px',textAlign:'center'}}>Any assets used in projects will live here. Start creating by uploading your files.</Typography>
+          </Box>
+
+        </Box>
+      )}
 
     </Box>
   );

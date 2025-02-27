@@ -11,12 +11,11 @@ import image from "../assets/image.png";
 import Submit from "../pages/submit";
 import VenueTable from "../pages/venue";
 
-export default function Cmeeting({ onBack, meetingName = "" }) {
+export default function Cmeeting({ onBack,selectedMeeting }) {
   const [openSubmitCard, setOpenSubmitCard] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const hiddenInputRef = useRef(null);
-  const [meetingNameValue, setMeetingNameValue] = useState(meetingName);
 
   const [discussionPoints, setDiscussionPoints] = useState([
     { id: "01", point: "Revision of Vision, Mission of the Department, PEOs, PSOs (if required):" },
@@ -29,7 +28,6 @@ export default function Cmeeting({ onBack, meetingName = "" }) {
   const repeatTypes = ["One Day", "One Week", "One Month"];
   const priorityTypes = ["High Priority", "Medium Priority", "Low Priority"];
 
-  const handleInitiateMeeting = () => setOpenSubmitCard(true);
   const handleOpenCalendar = () => { if (hiddenInputRef.current) hiddenInputRef.current.showPicker(); };
   const handleTextFieldClick = () => setIsVenueTableVisible(true);
   const handleCloseVenueTable = () => setIsVenueTableVisible(false);
@@ -37,19 +35,26 @@ export default function Cmeeting({ onBack, meetingName = "" }) {
     setSelectedVenue(venue);
     setIsVenueTableVisible(false);
   };
-
+  
   const handleAddTopic = () => {
     const newId = String(discussionPoints.length + 1).padStart(2, "0");
     const newPoint = { id: newId, point: "" };
     setDiscussionPoints([...discussionPoints, newPoint]);
   };
-
+  
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = useState(false);
   
+  const handleInitiateMeeting = () => {
+    setOpenSubmitCard(true);
+    setTimeout(() => {
+      onBack();
+    }, 3000);
+  };
+  
   return (
     <Box sx={{ display: "flex",justifyContent: "center",alignItems: "center",minHeight: "90vh"}}>
-      <Box sx={{ display: "flex",flexDirection: "column",width: "80%",minHeight: "90vh",backgroundColor: "#f5f5f5",padding: "16px",borderRadius: "8px",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"}}>
+      <Box sx={{ display: "flex",flexDirection: "column",minHeight: "90vh",backgroundColor: "#f5f5f5",padding: "16px",borderRadius: "8px",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"}}>
 
         <Box sx={{ display: "flex",alignItems: "center",justifyContent: "space-between",padding: "12px 0"}}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -127,16 +132,15 @@ export default function Cmeeting({ onBack, meetingName = "" }) {
                 <TableRow>
                   <TableCell sx={cellStyle}>Name of the Meeting</TableCell>
                   <TableCell sx={cellStyle}>
-                  <TextField 
-                  variant="standard" 
-                  placeholder="Ex..8th BoS Meeting"
-                  fullWidth
-                  InputProps={{ disableUnderline: true }} 
-                  value={meetingNameValue}
-                  onChange={(e) => setMeetingNameValue(e.target.value)}
-                  disabled={Boolean(meetingNameValue)} 
-                />
-
+                    <TextField 
+                      variant="standard" 
+                      placeholder="Ex..8th BoS Meeting"
+                      fullWidth
+                      value={selectedMeeting}
+                      InputProps={{ disableUnderline: true }} 
+                      onChange={(e) => setSelectedMeeting(e.target.value)}
+                      disabled={Boolean(selectedMeeting)}
+                    />
                   </TableCell>
                   <TableCell sx={cellStyle}>Reference Number</TableCell>
                   <TableCell sx={cellStyle}>
