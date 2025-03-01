@@ -17,8 +17,8 @@ import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import BoxBasic from "../components/createmeeting";
-import Cmeeting from "../components/template";
+import BoxBasic from "../pages/createmeeting";
+import Cmeeting from "./template";
 
 
 export default function MainPage() {
