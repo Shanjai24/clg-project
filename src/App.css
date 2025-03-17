@@ -1,42 +1,35 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+*{
+  box-sizing: border-box;
+}
+.App {
+  display: flex;
+  background-color: #F5F9FF; /* Set the background color */
+  
+}
+.App::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.main-content {
+  flex: 1;
+  margin-left: 76px; /* Adjust based on the width of the sidebar */
+  padding: 20px;
+  height: fit-content;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.main-content::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.full-content {
+  flex: 1;
+  padding: 20px;
+  height: 100vh;
+}
+.full-content::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.sidebar {
+  width: 76px; /* Adjust based on the width of the sidebar */
+  /* Add any additional styles for the sidebar */
 }
