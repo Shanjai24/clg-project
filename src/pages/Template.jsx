@@ -1104,6 +1104,7 @@ export default function Template() {
       </Box>
     </TableCell>
   );
+  
 
   return (
     <div className="cm-container"> {/* Change from page-container to cm-container */}
@@ -1200,7 +1201,7 @@ export default function Template() {
               <TableRow>
 
                   <TableCell sx={cellStyle}>Repeat Type</TableCell>
-                  <TableCell sx={cellStyle}>
+                  <TableCell sx={{ position: "relative", ...cellStyle }}>
                     {repeatValue ? (
                       <Box
                         sx={{ 
@@ -1209,10 +1210,11 @@ export default function Template() {
                           borderRadius: "20px",
                           bgcolor: "#f0f8ff", 
                           padding: "6px 12px",
-                          width: "fit-content" 
+                          width: "fit-content",
+                          minWidth: "10px" 
                         }}
                       >
-                        <Typography sx={{ color: "#175CD3", fontSize: '12px' }}>
+                        <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
                           {repeatValue}
                         </Typography>
                         <IconButton
@@ -1220,16 +1222,16 @@ export default function Template() {
                             border: "2px solid #FB3748", 
                             borderRadius: "50%", 
                             p: "2px",
-                            marginLeft: '5px', 
+                            marginLeft: "5px", 
                             "&:hover": { backgroundColor: "transparent" } 
                           }}
                           onClick={() => setRepeatValue("")}
                           disabled={isPreview}
                         >
-                          <CloseIcon sx={{ fontSize: "8px", color: "#FB3748"}} />
+                          <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
                         </IconButton>
                       </Box>
-                    ) :(
+                    ) : (
                       <TextField
                         placeholder="Ex..Monthly"
                         variant="standard"
@@ -1239,15 +1241,47 @@ export default function Template() {
                         disabled={isPreview}
                       />
                     )}
+
+                    {openRepeat && (
+                      <Box
+                        sx={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100vw",
+                          height: "100vh",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 5,
+                        }}
+                        onClick={() => setOpenRepeat(false)}
+                      >
+                        <Box
+                          sx={{
+                            backgroundColor: "white",
+                            padding: "16px",
+                            borderRadius: "8px",
+                            position: "relative",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <RepeatOverlay
+                            onClose={() => setOpenRepeat(false)}
+                            onSave={(selectedOption) => {
+                              setRepeatValue(selectedOption);
+                              setOpenRepeat(false);
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    )}
                   </TableCell>
-                  {openRepeat && <RepeatOverlay onClose={() => setOpenRepeat(false)} 
-                    onSave={(selectedOption) => {
-                      setRepeatValue(selectedOption);
-                      setOpenRepeat(false);
-                    }} 
-                  />}
+
 
                 <TableCell sx={headerCellStyle}>Priority Type</TableCell>
+
                 <TableCell sx={cellStyle}>
                   {isPreview ? (
                     <Typography sx={{ padding: '8px 0', color: '#374151' }}>
@@ -1273,6 +1307,7 @@ export default function Template() {
                     </Select>
                   )}
                 </TableCell>
+
               </TableRow>
               {/* Venue and Date Row */}
               <TableRow>

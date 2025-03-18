@@ -5,6 +5,8 @@ import "../styles/Dashboard.css";
 import DashboardRightPanel from "../components/DashboardRightPanel";
 import noTodoImage from "../assets/nomeetings.png"; // Ensure the path is correct
 import profileImage from "../assets/profileimage.png"; // Ensure the path is correct
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 // Dummy data for meetings
 const dummyMeetings = [
@@ -108,16 +110,57 @@ const Dashboard = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`tab ${activeTab === tab ? "active-tab" : ""}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' , justifyContent:'center' }}
             >
+              {tab === "Todo" && <i className="fi fi-rr-calendar"></i>}
+              {tab === "Scheduled" && <i className="fi fi-rr-clock"></i>}
+              {tab === "Draft" && <i className="fi fi-rr-file"></i>}
               {tab}
             </button>
           ))}
         </div>
 
         {/* Search Bar */}
-        <div className="search-bar">
-          <input type="text" placeholder="Search" />
-          <button className="filter-btn">Filter BY</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' , marginBottom:'20px' }}>
+          {/* Search Bar */}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <SearchIcon style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6c757d' }} />
+            <input 
+              type="text" 
+              placeholder="Search" 
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 36px', 
+                border: '1px solid #ccc', 
+                borderRadius: '6px',
+                outline: 'none',
+                fontSize: '14px',
+                height: '36px'
+              }} 
+            />
+          </div>
+
+          {/* Filter Button */}
+          <button 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '8px 12px',
+              backgroundColor: 'white',
+              color: '#6c757d',
+              border: '1px solid #ccc',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              height: '36px',
+              minWidth: '120px',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <FilterListIcon style={{ fontSize: '18px' }} />
+            <span style={{ fontSize: '14px' }}>Filter BY</span>
+          </button>
         </div>
 
         {/* Meeting Cards */}
@@ -128,13 +171,14 @@ const Dashboard = () => {
           </div>
         ) : (
           filteredMeetings.map((meeting) => (
-            <div key={meeting.id} className="meeting-card" onClick={() => handleMeetingCardClick(meeting)}>
-              <div className="meeting-type-banner">
-                <i className="fi fi-sr-info"></i> {meeting.type}
+            <div key={meeting.id} className="meeting-card" onClick={() => handleMeetingCardClick(meeting)} style={{ width: '100%', fontSize: '0.8rem', padding: '0.8rem', gap: '5px' }}>
+              <div className="meeting-type-banner" style={{ display:'flex',alignItems:'center',gap:'5px' }}>
+                <i className="fi fi-sr-info"></i> 
+                {meeting.type}
               </div>
-              <div className="meeting-title">
+              <div className="meeting-title" style={{ fontSize: '1rem' }}> {/* Adjusted font size */}
                 <h3>{meeting.title}</h3>
-                <span className="priority-tag">
+                <span className="priority-tag" style={{ fontSize: '0.9rem' }}> {/* Adjusted font size */}
                   <span className="priority-dot"></span>
                   {meeting.priority}
                 </span>

@@ -6,7 +6,7 @@ body {
 }
 
 .repeat-overlay {
-  background-color: #fff;
+  background-color: #fff; /* Ensure background color is white */
   border-radius: 8px;
   width: 500px;
   padding: 20px;

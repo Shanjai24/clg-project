@@ -1,5 +1,5 @@
 import { useEffect,useState } from "react";
-import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, IconButton, Card, Chip } from "@mui/material";
+import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, IconButton, Card, Chip ,Select, MenuItem } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DvrOutlinedIcon from "@mui/icons-material/DvrOutlined";
@@ -43,6 +43,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     navigate('/dashboardrightpanel');
   };
 
+  // Card 
   const [openSubmitCard, setOpenSubmitCard] = useState(false);
   const handleInitiateMeeting = () => {
     setOpenSubmitCard(true);
@@ -51,9 +52,11 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     }, 3000);
   };
 
+  // Priority 
   const priorityTypes = ["High Priority", "Medium Priority", "Low Priority"];
   const [selectedPriority, setSelectedPriority] = useState(null);
 
+  // Venue 
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [isVenueTableVisible, setIsVenueTableVisible] = useState(false);
   const handleTextFieldClick = () => setIsVenueTableVisible(true);
@@ -63,6 +66,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     setIsVenueTableVisible(false);
   };
 
+  // Discussion points 
   const [discussionPoints, setDiscussionPoints] = useState([
     { id: "01", point: "Revision of Vision, Mission of the Department, PEOs, PSOs (if required):" },
     { id: "02", point: "Discussion on Curriculum & syllabi of Proposed Regulations. (Based on revision of regulations):" },
@@ -74,6 +78,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     setDiscussionPoints([...discussionPoints, newPoint]);
   };
 
+  // Datetime 
   const [openDatetime, setOpenDatetime] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState("");
   const handleConfirm = (dateTime) => {
@@ -81,6 +86,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     setOpenDatetime(false);
   };
 
+  // Date 
   const [selectedDate, setSelectedDate] = useState({});
   const [openDateIndex, setOpenDateIndex] = useState(null);
   const handleDateConfirm = (date, index) => {
@@ -88,10 +94,11 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     setOpenDateIndex(null);
   };
 
+  // Repeat 
   const [openRepeat, setOpenRepeat] = useState(false);
   const [repeatValue, setRepeatValue] = useState("");
 
-  // Member list
+  // Member list functionality
   const [roles, setRoles] = useState([
     { role: '', members: [] }
   ]);
@@ -108,13 +115,13 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
   const addNewRole = () => {
     setRoles(prev => [...prev, { role: '', members: [] }]);
   };
+
   const memberSelectionCell = (role, index) => (
     <TableCell colSpan={3} sx={cellStyle}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Autocomplete
-          multiple
-          value={role.members}
-          onChange={(event, newValue) => handleMemberChange(index, newValue)}
+          value={role.members[0] || null}
+          onChange={(event, newValue) => handleMemberChange(index, newValue ? [newValue] : [])}
           options={allMembers}
           getOptionLabel={(option) => `${option.name} | ${option.role}`}
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -129,16 +136,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
               sx={styles.memberSelection.autocomplete}
             />
           )}
-          renderTags={(value, getTagProps) =>
-            value.map((member, index) => (
-              <Chip
-                {...getTagProps({ index })}
-                key={member.id}
-                label={`${member.name} | ${member.role}`}
-                sx={styles.memberSelection.chip}
-              />
-            ))
-          }
           renderOption={(props, option, { selected }) => (
             <li
               {...props}
@@ -299,6 +296,17 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
           '& fieldset': { border: 'none' },
           '&:hover fieldset': { border: 'none' },
           '&.Mui-focused fieldset': { border: 'none' }
+        },
+        '& .MuiAutocomplete-endAdornment': {
+          '& .MuiButtonBase-root': {
+            color: '#1967D2',
+          },
+        },
+        '& .MuiAutocomplete-clearIndicator': {
+          color: '#FC7A85',
+          '&:hover': {
+            color: '#EF4444'
+          }
         }
       },
       option: {
@@ -317,6 +325,86 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
       !selectedMeeting || !selectedDateTime || !repeatValue || !selectedVenue
     );
   }, [selectedMeeting, selectedDateTime, repeatValue, selectedVenue]);
+
+  const priorityOptions = [
+    { value: 'high', label: 'High Priority' },
+    { value: 'medium', label: 'Medium Priority' },
+    { value: 'low', label: 'Low Priority' }
+  ];
+
+  const [priorityType, setPriorityType] = useState("");
+
+  const handleMeetingChange = (field, value) => {
+    if (field === 'priorityType') {
+      setPriorityType(value);
+    }
+    // ...handle other fields if necessary...
+  };
+
+  const memberSelectionCellSimple = (index) => (
+    <TableCell sx={cellStyle}>
+      {discussionPoints[index].responsibility?.length > 0 ? (
+        <Box
+          sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            borderRadius: "20px",
+            bgcolor: "#f0f8ff", 
+            padding: "6px 12px",
+            width: "fit-content" 
+          }}
+        >
+          <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
+            {discussionPoints[index].responsibility[0].name}
+          </Typography>
+          <IconButton
+            sx={{
+              border: "2px solid #FB3748",
+              borderRadius: "50%",
+              p: "2px",
+              marginLeft: "5px",
+              "&:hover": { backgroundColor: "transparent" },
+            }}
+            onClick={() => {
+              const updatedPoints = [...discussionPoints];
+              updatedPoints[index].responsibility = [];
+              setDiscussionPoints(updatedPoints);
+            }}
+            disabled={isPreview}
+          >
+            <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
+          </IconButton>
+        </Box>
+      ) : (
+        <Autocomplete
+          value={discussionPoints[index].responsibility?.[0] || null}
+          onChange={(event, newValue) => {
+            const updatedPoints = [...discussionPoints];
+            updatedPoints[index].responsibility = newValue ? [newValue] : [];
+            setDiscussionPoints(updatedPoints);
+          }}
+          options={allMembers}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              placeholder="Select member"
+              sx={styles.memberSelection.autocomplete}
+            />
+          )}
+          filterOptions={(options, { inputValue }) => {
+            const searchTerm = inputValue.toLowerCase();
+            return options.filter(option => 
+              option.name.toLowerCase().includes(searchTerm)
+            );
+          }}
+          sx={{ flex: 1 }}
+        />
+      )}
+    </TableCell>
+  );
 
   return (
       <Box>
@@ -417,7 +505,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                       placeholder="Ex..8th BoS Meeting"
                       fullWidth
                       value={selectedMeeting}
-                      InputProps={{ disableUnderline: true }} 
+                      InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }} 
                       onChange={(e) => setSelectedMeeting(e.target.value)}
                       disabled={Boolean(selectedMeeting)}
                     />
@@ -460,7 +548,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                 <TableRow>
 
                   <TableCell sx={cellStyle}>Repeat Type</TableCell>
-                  <TableCell sx={cellStyle}>
+                  <TableCell sx={{ position: "relative", ...cellStyle }}>
                     {repeatValue ? (
                       <Box
                         sx={{ 
@@ -473,7 +561,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           minWidth: "10px" 
                         }}
                       >
-                        <Typography sx={{ color: "#175CD3", fontSize: '12px' }}>
+                        <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
                           {repeatValue}
                         </Typography>
                         <IconButton
@@ -481,152 +569,165 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                             border: "2px solid #FB3748", 
                             borderRadius: "50%", 
                             p: "2px",
-                            marginLeft: '5px', 
+                            marginLeft: "5px", 
                             "&:hover": { backgroundColor: "transparent" } 
                           }}
                           onClick={() => setRepeatValue("")}
                           disabled={isPreview}
                         >
-                          <CloseIcon sx={{ fontSize: "8px", color: "#FB3748"}} />
+                          <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
                         </IconButton>
                       </Box>
-                    ) :(
+                    ) : (
                       <TextField
                         placeholder="Ex..Monthly"
                         variant="standard"
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }}
                         value={repeatValue}
                         onClick={() => setOpenRepeat(true)}
                         disabled={isPreview}
                       />
                     )}
-                  </TableCell>
-                  {openRepeat && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100vw",
-                        height: "100vh",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 999,
-                      }}
-                    >
-                      <RepeatOverlay
-                        onClose={() => setOpenRepeat(false)}
-                        onSave={(selectedOption) => {
-                          setRepeatValue(selectedOption);
-                          setOpenRepeat(false);
+
+                    {openRepeat && (
+                      <Box
+                        sx={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100vw",
+                          height: "100vh",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 5,
                         }}
-                      />
-                    </div>
-                  )}
+                        onClick={() => setOpenRepeat(false)}
+                      >
+                        <Box
+                          sx={{
+                            backgroundColor: "white",
+                            padding: "16px",
+                            borderRadius: "8px",
+                            position: "relative",
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <RepeatOverlay
+                            onClose={() => setOpenRepeat(false)}
+                            onSave={(selectedOption) => {
+                              setRepeatValue(selectedOption);
+                              setOpenRepeat(false);
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                  </TableCell>
 
                   <TableCell sx={cellStyle}>Priority Type</TableCell>
-                    <TableCell sx={cellStyle}>
-                      {selectedPriority ? (
-                        <Box sx={{ display: "flex", alignItems: "center", borderRadius: "20px", bgcolor: "#f0f8ff", padding: "6px 12px", width: "fit-content" }}>
-                          <Typography sx={{ color: "#175CD3", fontSize:'12px' }}>
-                            {selectedPriority}
-                            <IconButton 
-                              sx={{ 
-                                border: "2px solid #FB3748", 
-                                borderRadius: "50%", 
-                                p: "2px",
-                                marginLeft:'5px', 
-                                "&:hover": { backgroundColor: "transparent" } 
-                              }} 
-                              onClick={() => setSelectedPriority(null)} 
-                              disabled={isPreview}
-                            >
-                              <CloseIcon sx={{ fontSize: "8px", color: "#FB3748"}} />
-                            </IconButton>
-                          </Typography>
-                        </Box>
-                      ) : (
-                        <Autocomplete 
-                          disablePortal 
-                          options={priorityTypes}
-                          sx={{ "& .MuiAutocomplete-endAdornment": { display: "none" } }}
-                          renderInput={(params) => (
-                            <TextField 
-                              {...params} 
-                              placeholder="Ex..High Priority" 
-                              variant="standard" 
-                              InputProps={{ 
-                                ...params.InputProps, 
-                                disableUnderline: true 
-                              }} 
-                              disabled={isPreview}
-                            />
-                          )}
-                          onChange={(event, newValue) => {
-                            setSelectedPriority(newValue);
-                          }}
-                        />
-                      )}
-                    </TableCell>
+                  <TableCell sx={cellStyle}>
+                    {isPreview ? (
+                      <Typography sx={{ padding: '8px 0', color: '#374151' }}>
+                        {priorityOptions.find(option => option.value === priorityType)?.label || 'Not specified'}
+                      </Typography>
+                    ) : (
+                      <Select
+                        fullWidth
+                        variant="standard"
+                        value={priorityType}
+                        onChange={(e) => handleMeetingChange('priorityType', e.target.value)}
+                        sx={selectStyle}
+                        displayEmpty
+                      >
+                        <MenuItem disabled value="">
+                          <em>Select priority</em>
+                        </MenuItem>
+                        {priorityOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  </TableCell>
+
                 </TableRow>
 
                 {/* Details */}
                 <TableRow>
 
                   <TableCell sx={cellStyle}>Venue Details</TableCell>
-                  <TableCell sx={cellStyle}>
-                    {selectedVenue ? (
-                      <Box sx={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        borderRadius: "20px",
-                        bgcolor: "#f0f8ff", 
-                        padding: "6px 12px",
-                        width: "fit-content" 
-                      }}>
-                        <Typography sx={{ color: "#175CD3", fontSize:'12px' }}>
-                          {selectedVenue.name}
-                          <IconButton sx={{ border: "2px solid #FB3748", borderRadius: "50%", p: "2px",marginLeft:'5px', "&:hover": { backgroundColor: "transparent" } }}
-                          onClick={() => setSelectedVenue(null)}
-                          disabled={isPreview}
+                    <TableCell sx={{ position: "relative", ...cellStyle }}>
+                      {selectedVenue ? (
+                        <Box
+                          sx={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            borderRadius: "20px",
+                            bgcolor: "#f0f8ff", 
+                            padding: "6px 12px",
+                            width: "fit-content" 
+                          }}
+                        >
+                          <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
+                            {selectedVenue.name}
+                          </Typography>
+                          <IconButton
+                            sx={{
+                              border: "2px solid #FB3748",
+                              borderRadius: "50%",
+                              p: "2px",
+                              marginLeft: "5px",
+                              "&:hover": { backgroundColor: "transparent" },
+                            }}
+                            onClick={() => setSelectedVenue(null)}
+                            disabled={isPreview}
                           >
-                              <CloseIcon sx={{ fontSize: "8px", color: "#FB3748"}} />
+                            <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
                           </IconButton>
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <TextField 
-                        variant="standard" 
-                        placeholder="Select venue" 
-                        fullWidth 
-                        InputProps={{ 
-                          disableUnderline: true, 
-                          style: { color: "#999" } 
-                        }} 
-                        onClick={handleTextFieldClick}
-                        readOnly
-                        disabled={isPreview}
-                      />
-                    )}
-                  </TableCell>
-                  {isVenueTableVisible && (
-                    <div style={{
-                      position: "fixed",
-                      top: 0,
-                      left: 0,
-                      width: "100vw",
-                      height: "100vh",
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      zIndex: 999,
-                    }}>
-                      <VenueTable onVenueSelect={handleVenueSelect} onClose={handleCloseVenueTable} />
-                    </div>
-                  )}
+                        </Box>
+                      ) : (
+                        <TextField 
+                          variant="standard" 
+                          placeholder="Select venue" 
+                          fullWidth 
+                          InputProps={{ 
+                            disableUnderline: true, 
+                            style: { color: "#999", fontStyle: 'italic' } 
+                          }} 
+                          onClick={handleTextFieldClick}
+                          readOnly
+                          disabled={isPreview}
+                        />
+                      )}
+
+                      {isVenueTableVisible && (
+                        <Box
+                          sx={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100vw",
+                            height: "100vh",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 5,
+                          }}
+                          onClick={handleCloseVenueTable}
+                        >
+                          <Box
+                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                          >
+                            <VenueTable onVenueSelect={handleVenueSelect} onClose={handleCloseVenueTable} />
+                          </Box>
+                        </Box>
+                      )}
+                    </TableCell>
+
 
                   <TableCell sx={cellStyle}>Date & Time</TableCell>
                     <TableCell sx={cellStyle}>
@@ -634,7 +735,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         variant="standard"
                         placeholder="Select time"
                         multiline
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }}
                         value={selectedDateTime}
                         onClick={() => setOpenDatetime(true)}
                         readOnly
@@ -709,7 +810,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                             fullWidth
                             InputProps={{ 
                               disableUnderline: true,
-                              style: inputStyle
+                              style: { fontSize: '14px', fontWeight: 'bold', fontStyle: 'italic' }
                             }}
                             value={role.role}
                             onChange={(e) => handleRoleChange(index, 'role', e.target.value)}
@@ -727,7 +828,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         onClick={addNewRole}
                       >
                         <AddCircleOutlineIcon sx={{ marginRight: 1 }} />
-                        <Typography>Add new Topic</Typography>
+                        <Typography>Add Member</Typography>
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -782,7 +883,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           maxRows={4}
                           InputProps={{ 
                             disableUnderline: true,
-                            sx: { fontSize: '14px',fontWeight:'bold'}
+                            sx: { fontSize: '14px',fontWeight:'bold', fontStyle: 'italic'}
                           }}
                           value={item.point}
                           onChange={(e) => {
@@ -820,7 +921,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         variant="standard"
                         placeholder="Add remarks"
                         fullWidth
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }}
                         value={item.todo || ""}
                         onChange={(e) => {
                           const updatedPoints = [...discussionPoints];
@@ -830,32 +931,21 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         disabled={isPreview}
                       />
                     </TableCell>
+                    
+                    {memberSelectionCellSimple(index)}
 
-                    <TableCell sx={cellStyle}>
-                      <TextField
-                        variant="standard"
-                        placeholder="Select Member"
-                        fullWidth
-                        InputProps={{ disableUnderline: true }}
-                        value={item.responsibility || ""}
-                        onChange={(e) => {
-                          const updatedPoints = [...discussionPoints];
-                          updatedPoints[index].responsibility = e.target.value;
-                          setDiscussionPoints(updatedPoints);
-                        }}
-                        disabled={isPreview}
-                      />
-                    </TableCell>
-
-                    <TableCell sx={cellStyle}>
-                      <TextField variant="standard" placeholder="Select Date" fullWidth 
-                        InputProps={{ disableUnderline: true }} 
+                    <TableCell sx={{ position: "relative", ...cellStyle }}>
+                      <TextField 
+                        variant="standard" 
+                        placeholder="Select Date" 
+                        fullWidth 
+                        InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }} 
                         value={selectedDate[index] || ""}
                         onClick={() => setOpenDateIndex(index)}
                         readOnly
                         disabled={isPreview}
                       />
-                    </TableCell>
+
                     {openDateIndex === index && (
                       <Box
                         sx={{
@@ -864,27 +954,27 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           left: 0,
                           width: "100vw",
                           height: "100vh",
-                          bgcolor: "rgba(0, 0, 0, 0.5)",
-                          zIndex: 1300,
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          zIndex: 5,
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
                         }}
+                        onClick={() => setOpenDateIndex(null)}
                       >
                         <Box
-                          sx={{
-                            position: "relative",
-                            zIndex: 1301,
-                          }}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                        <DatePick 
-                          onConfirm={(date) => handleDateConfirm(date, index)} 
-                          onClose={() => setOpenDateIndex(null)}
-                          disabled={isPreview}
-                        />
+                          <DatePick 
+                            onConfirm={(date) => handleDateConfirm(date, index)} 
+                            onClose={() => setOpenDateIndex(null)}
+                            disabled={isPreview}
+                          />
                         </Box>
-                    </Box>
+                      </Box>
                     )}
+                    </TableCell>
+
 
                   </TableRow>
                 ))}
@@ -895,7 +985,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                       onClick={handleAddTopic}
                     >
                       <AddCircleOutlineIcon sx={{ marginRight: 1 }} />
-                      <Typography>Add new Topic</Typography>
+                      <Typography>Add New Points</Typography>
                     </Box>
                   </TableCell>
                 </TableRow>
@@ -970,4 +1060,19 @@ const actionsWrapperStyle = {
   gap: '8px',
   opacity: 0,
   transition: 'opacity 0.2s'
+};
+
+const selectStyle = {
+  fontSize: "0.95rem",
+  '.MuiSelect-select': {
+    padding: '2px 8px',
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  '&:before, &:after': {
+    display: 'none'
+  },
+  '& .MuiSelect-icon': {
+    color: '#666'
+  }
 };

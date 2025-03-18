@@ -25,7 +25,7 @@ return (
             <Box sx={{ display: "flex",alignItems: "center",justifyContent: "space-between",padding: "12px 0",gap:50}}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Box sx={{ display: "flex", padding: "5px", backgroundColor: "white" }}>
-                        <ArrowBackIcon sx={{ cursor: "pointer" }}/>
+                        <ArrowBackIcon sx={{ cursor: "pointer" }} onClick={() => navigate("/dashboardrightpanel")}/>
                     </Box>
                     <Typography variant="h6" fontWeight="bold">
                         BOS Meeting
@@ -50,6 +50,7 @@ return (
                                 alignItems: 'center',
                                 gap: '5px',
                             }}
+                            onClick={() => navigate("/dashboardrightpanel")}
                             >
                             <DeleteOutlineIcon sx={{ fontSize: '18px' }} />
                             Cancel Meeting
@@ -186,22 +187,12 @@ return (
 
                                         <TableCell sx={cellStyle}>Priority Type</TableCell>
                                         <TableCell sx={cellStyle}>
-                                            <Autocomplete
-                                            disablePortal
-                                            sx={{
-                                                "& .MuiAutocomplete-endAdornment": { display: "none" },
+                                            <TextField
+                                            placeholder="Ex..High Priority"
+                                            variant="standard"
+                                            InputProps={{
+                                                disableUnderline: true,
                                             }}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                {...params}
-                                                placeholder="Ex..High Priority"
-                                                variant="standard"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    disableUnderline: true,
-                                                }}
-                                                />
-                                            )}
                                             />
                                         </TableCell>
                                     </TableRow>

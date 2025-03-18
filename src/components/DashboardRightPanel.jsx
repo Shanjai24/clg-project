@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, subMonths, addMonths, isSameMonth } from "date-fns";
 import CreateMeeting from "../pages/CreateMeeting";
 import Template1 from "../components/template1";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const generateTimeSlots = (meetings) => {
   const slots = [];
@@ -182,29 +183,29 @@ const calculateCurrentTimePosition = () => {
         </div>
       )}
       
-      <div style={{ display: 'flex', flexDirection: 'column'}}>
-        <div style={{ padding: '1rem', borderRadius: '0.5rem ',display:'flex',justifyContent:'center'}}>
+      <div style={{ display: 'flex', flexDirection: 'column' , gap:'5px',marginTop:'16px'}}>
+        <div>
             <button style={{
-              width:'100%',
-              padding: '0.75rem',
+              padding: '0.5rem',
               backgroundColor: '#27ae60',
               color: 'white',
               border: 'none',
-              borderRadius: '12px',
               fontSize: '1rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              textAlign: 'center' // Added to center text
+              textAlign: 'center',
+              width:'100%',
+              borderRadius: '5px'
             }} onClick={handleCreateMeetingClick}>
-              <i className="fi fi-rr-plus" style={{ display: 'flex', alignItems: 'center' }}></i> {/* Added style to center icon */}
+              <AddCircleOutlineIcon/>
               Create Meeting
             </button>
         </div>
         
-        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '1rem', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '0.5rem', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
           <div style={{ backgroundColor: 'white', padding: '0.25rem', borderRadius: '0.25rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', color: 'black' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#1a1a1a', margin: 0 }}>{format(selectedDate, 'MMM dd-yyyy')}</h2>
@@ -250,7 +251,14 @@ const calculateCurrentTimePosition = () => {
           {/* Schedule Section */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#1a1a1a', margin: '0 0 1rem 0' }}>Today's Schedule</h3>
-            <div style={{ position: 'relative', flex: 1, margin: '0 auto', padding: '0', overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: '8px', width: '100%', maxHeight: '300px' }}>
+            <div style={{ position: 'relative', flex: 1, margin: '0 auto', padding: '0', overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: '8px', width: '100%', maxHeight: '300px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <style>
+                {`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}
+              </style>
               {generateTimeSlots(meetings).map(hour => (
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '40px' }} key={hour}>
                   <div style={{ minWidth: '50px', padding: '0 4px', color: '#585858', fontSize: '10px', textAlign: 'right' }}>{`${hour}:00`}</div>
@@ -296,6 +304,7 @@ const MeetingCard = ({ meeting, top, height, formatTime }) => {
         padding: '4px 8px',
         borderRadius: '4px',
         fontSize: '12px',
+        zIndex: 1,
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         transition: 'all 0.3s ease',
         cursor: 'pointer',
@@ -303,8 +312,7 @@ const MeetingCard = ({ meeting, top, height, formatTime }) => {
         height: `${height}%`,
         backgroundColor: meeting.color,
         border: `1px solid ${meeting.borderColor}`,
-        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-        zIndex: isHovered ? 2 : 1
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

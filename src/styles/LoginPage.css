@@ -68,7 +68,7 @@
 
 .login-page-google-btn {
   width: 100%;
-  padding: 0.8rem;
+  padding: 0.2rem;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background: white;
@@ -81,8 +81,8 @@
 }
 
 .login-page-google-icon {
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
 }
 
 .login-page-divider {
@@ -94,6 +94,26 @@
 
 .login-page-divider span {
   padding: 0 1rem;
+}
+
+.login-page-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.login-page-divider-line {
+  flex-grow: 1;
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+}
+
+.login-page-divider-text {
+  margin: 0 10px;
+  color: #666;
+  font-weight: bold;
 }
 
 .login-page-form-group {
@@ -144,6 +164,22 @@
   font-size: 1rem;
   cursor: pointer;
   margin-top: 1rem;
+}
+
+.login-page-password-container {
+  position: relative;
+}
+
+.login-page-show-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #2196f3;
+  cursor: pointer;
+  font-size: 1.2rem; /* Adjusted for icon size */
 }
 
 /* Right Section - Using the actual image */

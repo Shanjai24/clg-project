@@ -6,7 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
 const DateTimePicker = ({ onConfirm }) => {
-  const [selectedDate, setSelectedDate] = useState(dayjs("2025-06-14"));
+  const [selectedDate, setSelectedDate] = useState(dayjs(""));
   const [fromTime, setFromTime] = useState({ hour: 4, minute: 57, amPm: "AM" });
   const [toTime, setToTime] = useState({ hour: 6, minute: 30, amPm: "PM" });
 
