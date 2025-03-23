@@ -6,7 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
 const DateTimePicker = ({ onConfirm }) => {
-  const [selectedDate, setSelectedDate] = useState(dayjs(""));
+  const [selectedDate, setSelectedDate] = useState(null);
   const [fromTime, setFromTime] = useState({ hour: 4, minute: 57, amPm: "AM" });
   const [toTime, setToTime] = useState({ hour: 6, minute: 30, amPm: "PM" });
 
@@ -31,10 +31,14 @@ const DateTimePicker = ({ onConfirm }) => {
   const handleClear = () => {
     setFromTime({ hour: 4, minute: 57, amPm: "AM" });
     setToTime({ hour: 6, minute: 30, amPm: "PM" });
-    setSelectedDate(dayjs("2025-06-14"));
+    setSelectedDate(null);
   };
 
   const handleConfirm = () => {
+    if (!selectedDate) {
+      alert("Please select a date.");
+      return;
+    }
     const formattedDateTime = `${selectedDate.format("DD-MM-YYYY")} && ${fromTime.hour}:${fromTime.minute
       .toString()
       .padStart(2, "0")} ${fromTime.amPm} - ${toTime.hour}:${toTime.minute

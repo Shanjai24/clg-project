@@ -38,9 +38,14 @@ const Submit = () => {
 
 export default function Cmeeting({ onBack,selectedMeeting }) {
   const navigate = useNavigate();
+  const [isPreview, setIsPreview] = useState(false); // Add this state
 
   const handleBack = () => {
     navigate('/dashboardrightpanel');
+  };
+
+  const handlePreview = () => {
+    setIsPreview(!isPreview); // Toggle preview mode
   };
 
   // Card 
@@ -68,10 +73,9 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
 
   // Discussion points 
   const [discussionPoints, setDiscussionPoints] = useState([
-    { id: "01", point: "Revision of Vision, Mission of the Department, PEOs, PSOs (if required):" },
-    { id: "02", point: "Discussion on Curriculum & syllabi of Proposed Regulations. (Based on revision of regulations):" },
-    { id: "03", point: "Suggestions for innovative teaching methodology/ Evaluation /Question Paper:" },
+    { id: "01", point: "" }
   ]);
+
   const handleAddTopic = () => {
     const newId = String(discussionPoints.length + 1).padStart(2, "0");
     const newPoint = { id: newId, point: "" };
@@ -115,13 +119,14 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
   const addNewRole = () => {
     setRoles(prev => [...prev, { role: '', members: [] }]);
   };
-
+  
   const memberSelectionCell = (role, index) => (
     <TableCell colSpan={3} sx={cellStyle}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Autocomplete
-          value={role.members[0] || null}
-          onChange={(event, newValue) => handleMemberChange(index, newValue ? [newValue] : [])}
+          multiple
+          value={role.members}
+          onChange={(event, newValue) => handleMemberChange(index, newValue)}
           options={allMembers}
           getOptionLabel={(option) => `${option.name} | ${option.role}`}
           isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -134,8 +139,46 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
               variant="outlined"
               placeholder={role.members.length === 0 ? "Search members..." : ""}
               sx={styles.memberSelection.autocomplete}
+              disabled={isPreview} // Disable in preview mode
             />
           )}
+          renderTags={(value, getTagProps) =>
+            value.map((member, memberIndex) => (
+              <Box
+                key={member.id}
+                sx={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  borderRadius: "20px",
+                  bgcolor: "#f0f8ff", 
+                  padding: "6px 12px",
+                  width: "fit-content" 
+                }}
+              >
+                <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
+                  {member.name} | {member.role}
+                </Typography>
+                <IconButton
+                  sx={{
+                    border: "2px solid #FB3748",
+                    borderRadius: "50%",
+                    p: "2px",
+                    marginLeft: "5px",
+                    "&:hover": { backgroundColor: "transparent" },
+                  }}
+                  {...getTagProps({ index: memberIndex })}
+                  onClick={() => {
+                    const newMembers = role.members.filter((_, i) => i !== memberIndex);
+                    handleMemberChange(index, newMembers);
+                  }}
+                  disabled={isPreview} // Disable in preview mode
+                >
+                  <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
+                </IconButton>
+              </Box>
+            ))
+          }
+          
           renderOption={(props, option, { selected }) => (
             <li
               {...props}
@@ -164,11 +207,11 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
             );
           }}
           sx={{ flex: 1 }}
+          disabled={isPreview} // Disable in preview mode
         />
-
-        {!isPreview && (
+        {!isPreview && ( // Conditionally render action buttons
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Box component="span" sx={{...actionButtonStyle, cursor: 'grab'}} onMouseDown={() => handleRoleDragStart(index)}>
+            <Box component="span" sx={{...actionButtonStyle, cursor: 'grab'}}>
               <MdDragIndicator size={18} />
             </Box>
             <Box 
@@ -189,6 +232,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
       </Box>
     </TableCell>
   );
+  
   const getAlphabeticalIndex = (index) => {
     return String.fromCharCode(97 + index) + ".";
   };
@@ -317,15 +361,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
     }
   };
 
-
-  const [isPreview, setIsPreview] = useState(false);
-  const [isPreviewDisabled, setIsPreviewDisabled] = useState(true);
-  useEffect(() => {
-    setIsPreviewDisabled(
-      !selectedMeeting || !selectedDateTime || !repeatValue || !selectedVenue
-    );
-  }, [selectedMeeting, selectedDateTime, repeatValue, selectedVenue]);
-
   const priorityOptions = [
     { value: 'high', label: 'High Priority' },
     { value: 'medium', label: 'Medium Priority' },
@@ -348,10 +383,12 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
           sx={{ 
             display: "flex", 
             alignItems: "center", 
+            justifyContent: "center", // Center the text
             borderRadius: "20px",
             bgcolor: "#f0f8ff", 
             padding: "6px 12px",
-            width: "fit-content" 
+            width: "100%", // Ensure the box takes full width
+            textAlign: "center" // Center the text inside the box
           }}
         >
           <Typography sx={{ color: "#175CD3", fontSize: "12px" }}>
@@ -370,7 +407,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
               updatedPoints[index].responsibility = [];
               setDiscussionPoints(updatedPoints);
             }}
-            disabled={isPreview}
+            disabled={isPreview} // Disable in preview mode
           >
             <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
           </IconButton>
@@ -392,6 +429,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
               variant="outlined"
               placeholder="Select member"
               sx={styles.memberSelection.autocomplete}
+              disabled={isPreview} // Disable in preview mode
             />
           )}
           filterOptions={(options, { inputValue }) => {
@@ -401,6 +439,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
             );
           }}
           sx={{ flex: 1 }}
+          disabled={isPreview} // Disable in preview mode
         />
       )}
     </TableCell>
@@ -420,41 +459,33 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
             </Typography>
           </Box>
 
-          {isPreview ? (
-            <Box sx={{display:'flex',gap:6,alignItems:'center',justifyContent:'center'}}>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#007bff",
-                  textTransform: "none",
-                  gap: "5px",
-                  "&:hover": { backgroundColor: "#0069d9" },
-                }}
-              >
-                <VerticalAlignBottomIcon sx={{ fontSize: "18px" }} />
-                Download
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{ textTransform: "none", gap: "5px" }}
-                onClick={() => setIsPreview(false)}
-              >
-                <AutorenewIcon sx={{ fontSize: "18px" }} />
-              </Button>
-            </Box>
-            ) : (
-              <Box sx={{ display: "flex",alignItems: "center",gap: 1,padding: "6px",backgroundColor: "white",borderRadius: "8px" }}>
-                <Button variant="outlined" 
-                  sx={{ textTransform: "none", gap: "5px" }} 
-                  onClick={() => setIsPreview(true)}
-                  disabled={isPreviewDisabled}
-                >
-                  <DvrOutlinedIcon sx={{ fontSize: "18px" }} />
-                  Preview
-                </Button>
+          <Box sx={{ display: "flex",alignItems: "center",gap: 1,padding: "6px",backgroundColor: "white",borderRadius: "8px",marginRight:'60px' }}>
+            <Button variant="outlined" 
+              sx={{ textTransform: "none", gap: "5px" }} 
+              onClick={handlePreview}
+            >
+              <DvrOutlinedIcon sx={{ fontSize: "18px" }} />
+              Preview
+            </Button>
+            {isPreview ? (
                 <Button
                   variant="contained"
-                  sx={{ backgroundColor: "#6c757d",textTransform: "none",gap: "5px",
+                  sx={{
+                    backgroundColor: "#007bff",
+                    textTransform: "none",
+                    gap: "5px",
+                    "&:hover": { backgroundColor: "#0069d9" },
+                    width:'300px'
+                  }}
+                >
+                  <VerticalAlignBottomIcon sx={{ fontSize: "18px" }} />
+                  Download
+                </Button>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  sx={{ backgroundColor: "#6c757d", textTransform: "none", gap: "5px",
                     "&:hover": { backgroundColor: "#5a6268" },
                   }}
                 >
@@ -474,8 +505,9 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                   <AutoAwesomeOutlinedIcon sx={{ fontSize: "18px" }} />
                   Initiate meeting
                 </Button>
-              </Box>
+              </>
             )}
+          </Box>
         </Box>
 
         {openSubmitCard && (
@@ -507,12 +539,12 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                       value={selectedMeeting}
                       InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }} 
                       onChange={(e) => setSelectedMeeting(e.target.value)}
-                      disabled={Boolean(selectedMeeting)}
+                      disabled={isPreview}
                     />
                   </TableCell>
                   
-                  <TableCell sx={cellStyle}>Reference Number</TableCell>
-                  <TableCell sx={cellStyle}>
+                  <TableCell sx={{...cellStyle,backgroundColor:'#E7E7E7',color:'#777'}}>Reference Number</TableCell>
+                  <TableCell sx={{...cellStyle,backgroundColor:'#E7E7E7'}}>
                     <TextField 
                       variant="standard" 
                       placeholder="Auto generate" 
@@ -520,10 +552,12 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                       InputProps={{ 
                         disableUnderline: true,
                         sx: { fontStyle: 'italic', color: '#777' }
-                      }} 
-                      disabled={isPreview}
+                      }}
+                      disabled={true}
+
                     />
                   </TableCell>
+                  
                 </TableRow>
 
                 <TableRow>
@@ -539,7 +573,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         disableUnderline: true,
                         sx: { fontStyle: 'italic', color: '#555' }
                       }}
-                      disabled={isPreview}
+                      disabled={isPreview} // Disable in preview mode
                     />
                   </TableCell>
                 </TableRow>
@@ -573,7 +607,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                             "&:hover": { backgroundColor: "transparent" } 
                           }}
                           onClick={() => setRepeatValue("")}
-                          disabled={isPreview}
                         >
                           <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
                         </IconButton>
@@ -585,7 +618,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         InputProps={{ disableUnderline: true, style: { fontStyle: 'italic' } }}
                         value={repeatValue}
                         onClick={() => setOpenRepeat(true)}
-                        disabled={isPreview}
+                        disabled={isPreview} // Disable in preview mode
                       />
                     )}
 
@@ -628,11 +661,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
 
                   <TableCell sx={cellStyle}>Priority Type</TableCell>
                   <TableCell sx={cellStyle}>
-                    {isPreview ? (
-                      <Typography sx={{ padding: '8px 0', color: '#374151' }}>
-                        {priorityOptions.find(option => option.value === priorityType)?.label || 'Not specified'}
-                      </Typography>
-                    ) : (
                       <Select
                         fullWidth
                         variant="standard"
@@ -640,6 +668,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         onChange={(e) => handleMeetingChange('priorityType', e.target.value)}
                         sx={selectStyle}
                         displayEmpty
+                        disabled={isPreview} // Disable in preview mode
                       >
                         <MenuItem disabled value="">
                           <em>Select priority</em>
@@ -650,7 +679,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           </MenuItem>
                         ))}
                       </Select>
-                    )}
                   </TableCell>
 
                 </TableRow>
@@ -683,7 +711,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                               "&:hover": { backgroundColor: "transparent" },
                             }}
                             onClick={() => setSelectedVenue(null)}
-                            disabled={isPreview}
+                            disabled={isPreview} // Disable in preview mode
                           >
                             <CloseIcon sx={{ fontSize: "8px", color: "#FB3748" }} />
                           </IconButton>
@@ -699,7 +727,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           }} 
                           onClick={handleTextFieldClick}
                           readOnly
-                          disabled={isPreview}
+                          disabled={isPreview} // Disable in preview mode
                         />
                       )}
 
@@ -739,7 +767,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         value={selectedDateTime}
                         onClick={() => setOpenDatetime(true)}
                         readOnly
-                        disabled={isPreview}
+                        disabled={isPreview} // Disable in preview mode
                       />
                         {openDatetime && (
                         <Box
@@ -781,12 +809,12 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                 {roles.map((role, index) => (
                   <TableRow 
                     key={index}
-                    draggable={!isPreview}
-                    onDragStart={!isPreview ? () => handleRoleDragStart(index) : undefined}
-                    onDragOver={!isPreview ? handleDragOver : undefined}
-                    onDragEnter={!isPreview ? () => handleDragEnter(index, 'role') : undefined}
-                    onDragLeave={!isPreview ? handleDragLeave : undefined}
-                    onDrop={!isPreview ? () => handleDrop(index, 'role') : undefined}
+                    draggable // Add this line
+                    onDragStart={() => handleRoleDragStart(index)}
+                    onDragOver={ handleDragOver }
+                    onDragEnter={() => handleDragEnter(index, 'role') }
+                    onDragLeave={ handleDragLeave}
+                    onDrop={ () => handleDrop(index, 'role') }
                     sx={{
                       '&:hover .actions': {
                         opacity: 1
@@ -799,11 +827,6 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         <span style={{ color: '#64748b', minWidth: '24px' }}>
                           {getAlphabeticalIndex(index)}
                         </span>
-                        {isPreview ? (
-                          <Typography sx={{ color: '#374151' }}>
-                            {role.role || 'Not specified'}
-                          </Typography>
-                        ) : (
                           <TextField 
                             variant="standard" 
                             placeholder="Enter title"
@@ -814,8 +837,8 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                             }}
                             value={role.role}
                             onChange={(e) => handleRoleChange(index, 'role', e.target.value)}
+                            disabled={isPreview} // Disable in preview mode
                           />
-                        )}
                       </Box>
                     </TableCell>
                     {memberSelectionCell(role, index)}
@@ -846,7 +869,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                   <TableRow>
                     <TableCell width="5%" sx={headerCellStyle}>S.No</TableCell>
                     <TableCell width="30%" sx={headerCellStyle}>Points to be Discussed</TableCell>
-                    <TableCell width="20%" sx={headerCellStyle}>Todo</TableCell>
+                    <TableCell width="20%" sx={{...headerCellStyle}}>Todo</TableCell>
                     <TableCell width="20%" sx={headerCellStyle}>Responsibility</TableCell>
                     <TableCell width="20%" sx={headerCellStyle}>Deadline</TableCell>
                   </TableRow>
@@ -857,12 +880,12 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                 {discussionPoints.map((item, index) => (
                   <TableRow 
                     key={item.id}
-                    draggable={!isPreview}
-                    onDragStart={!isPreview ? () => handlePointDragStart(index) : undefined}
-                    onDragOver={!isPreview ? handleDragOver : undefined}
-                    onDragEnter={!isPreview ? () => handleDragEnter(index, 'point') : undefined}
-                    onDragLeave={!isPreview ? handleDragLeave : undefined}
-                    onDrop={!isPreview ? () => handleDrop(index, 'point') : undefined}
+                    draggable // Add this line
+                    onDragStart={() => handlePointDragStart(index)}
+                    onDragOver={handleDragOver}
+                    onDragEnter={() => handleDragEnter(index, 'point')}
+                    onDragLeave={handleDragLeave }
+                    onDrop={() => handleDrop(index, 'point')}
                     sx={{
                       '&:hover .actions': {
                         opacity: 1
@@ -891,7 +914,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                             updatedPoints[index].point = e.target.value;
                             setDiscussionPoints(updatedPoints);
                           }}
-                          disabled={isPreview}
+                          disabled={isPreview} // Disable in preview mode
                         />
                         {!isPreview && (
                           <Box className="actions" sx={actionsWrapperStyle}>
@@ -916,7 +939,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                       </Box>
                     </TableCell>
 
-                    <TableCell sx={cellStyle}>
+                    <TableCell sx={{...cellStyle,backgroundColor:'#E7E7E7'}}>
                       <TextField
                         variant="standard"
                         placeholder="Add remarks"
@@ -928,7 +951,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           updatedPoints[index].todo = e.target.value;
                           setDiscussionPoints(updatedPoints);
                         }}
-                        disabled={isPreview}
+                        disabled={true}
                       />
                     </TableCell>
                     
@@ -943,7 +966,7 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                         value={selectedDate[index] || ""}
                         onClick={() => setOpenDateIndex(index)}
                         readOnly
-                        disabled={isPreview}
+                        disabled={isPreview} // Disable in preview mode
                       />
 
                     {openDateIndex === index && (
@@ -968,28 +991,26 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
                           <DatePick 
                             onConfirm={(date) => handleDateConfirm(date, index)} 
                             onClose={() => setOpenDateIndex(null)}
-                            disabled={isPreview}
                           />
                         </Box>
                       </Box>
                     )}
                     </TableCell>
 
-
                   </TableRow>
                 ))}
-
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ border: 0, padding: 0 }}>
-                    <Box sx={{ display: "flex",justifyContent: "center",alignItems: "center",border: "2px dashed #1976d2",margin: "auto",padding: "8px",color: "#1976d2",cursor: "pointer"}}
-                      onClick={handleAddTopic}
-                    >
-                      <AddCircleOutlineIcon sx={{ marginRight: 1 }} />
-                      <Typography>Add New Points</Typography>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-
+                {!isPreview && (
+                  <TableRow>
+                    <TableCell colSpan={5} sx={{ border: 0, padding: 0 }}>
+                      <Box sx={{ display: "flex",justifyContent: "center",alignItems: "center",border: "2px dashed #1976d2",margin: "auto",padding: "8px",color: "#1976d2",cursor: "pointer"}}
+                        onClick={handleAddTopic}
+                      >
+                        <AddCircleOutlineIcon sx={{ marginRight: 1 }} />
+                        <Typography>Add New Points</Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
 
             </Table>
