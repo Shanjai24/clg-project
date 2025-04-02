@@ -11,6 +11,7 @@ import Database from './pages/Database';
 import Template from './pages/Template';
 import Template1 from "./components/template1";
 import Reports from './pages/Reports'; // Add this import
+import Calendar from './components/Calendar';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +51,7 @@ function App() {
                   <Route path="/support" element={<div>Support</div>} />
                   <Route path="/logout" element={<div>Logout</div>} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  <Route path='/calendar' element={<Calendar/>} />
                 </Routes>
               </div>
             </>

@@ -37,7 +37,7 @@ export default function StartMeet({ handleBack }) {
                     </Typography>
                 </Box>
                 {!onStart ? (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, padding: "6px", backgroundColor: "white", borderRadius: "8px" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, borderRadius: "8px" }}>
                         <Button
                             variant="outlined"
                             sx={{

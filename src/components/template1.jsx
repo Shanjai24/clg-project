@@ -450,18 +450,16 @@ export default function Cmeeting({ onBack,selectedMeeting }) {
 
         {/* top buttons */}
         <Box sx={{ display: "flex",alignItems: "center",justifyContent: "space-between",padding: "12px 0"}}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box sx={{ display: "flex", padding: "5px", backgroundColor: "white" }}>
-              <ArrowBackIcon sx={{ cursor: "pointer" }} onClick={handleBack}/>
-            </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 , marginLeft:'30px' }}>
+            <ArrowBackIcon sx={{ cursor: "pointer" }} onClick={handleBack}/>
             <Typography variant="h6" fontWeight="bold">
               Create meeting
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex",alignItems: "center",gap: 1,padding: "6px",backgroundColor: "white",borderRadius: "8px",marginRight:'60px' }}>
+          <Box sx={{ display: "flex",alignItems: "center",gap: 1,borderRadius: "8px",marginRight:'60px' }}>
             <Button variant="outlined" 
-              sx={{ textTransform: "none", gap: "5px" }} 
+              sx={{ textTransform: "none", gap: "5px" , backgroundColor:'white' }} 
               onClick={handlePreview}
             >
               <DvrOutlinedIcon sx={{ fontSize: "18px" }} />
